@@ -1,0 +1,53 @@
+application {
+  config {
+    prodDatabaseType postgresql,
+    authenticationType oauth2
+    baseName calendar
+    packageName com.system.design.calendar
+    buildTool maven
+    clientFramework react
+    testFrameworks [cypress, cucumber]
+  }
+  entities *
+}
+
+entity User {
+
+  id Integer required unique
+  name String
+  email String required pattern unique
+}
+
+entity Calendar {
+  id Long required unique
+  name String
+  description String max(300)
+  time ZonedDateTime
+}
+//timestamp with timezone in postgres can be used
+@dto(mapstruct)
+entity Events {
+  id Long unique,
+  name String
+  description String
+  start ZonedDateTime
+  end ZonedDateTime
+  allDay Boolean
+}
+
+entity Notification {
+  id Long required unique
+  effective ZonedDateTime
+}
+
+entity NotificationChannel {
+  id Long
+  method String
+  value String
+}
+
+relationship ManyToMany {
+  User to Calendar
+}
+
+paginate Events with infinite-scroll
